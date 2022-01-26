@@ -29,3 +29,7 @@ https://coolors.co/d2375e-ffe0b5-8a6552-452521-bdb246
 -------------------------
 Comando p formatar o documento
 ctrl+shift+p Format Document
+
+-------------------------
+https://wallpapercave.com/friends-pc-wallpapers 
+fotos friends
