@@ -1,34 +1,8 @@
-import appConfig from '../config.json'
-import { Box, Button, Text, TextField, Image } from '@skynexui/components'
+import appConfig from '../config.json';
+import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import { useRouter } from 'next/router';
+import React from 'react';
 
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                list-style: none;
-            }
-            body {
-                font-family: 'Open Sans', sans-serif;
-            }
-            /* App fit Height */ 
-            html, body, #__next {
-                min-height: 100vh;
-                display: flex;
-                flex: 1;
-            }
-            #__next {
-                flex: 1;
-            }
-            #__next > * {
-                flex: 1;
-            }
-            /* ./App fit Height */ 
-        `}</style>
-    )
-}
 
 function Titulo(props) {
     // console.log(props);
@@ -45,6 +19,12 @@ function Titulo(props) {
             `}</style>
         </>
     )
+}
+
+async function buscaApiGithub(username, setCreated) {
+    await fetch(`https://api.github.com/users/${username}`).then(r => r.json()).then(r=>{
+        setCreated(r.created_at);
+    });
 }
 
 // Componente React
@@ -172,50 +152,75 @@ function Titulo(props) {
 //   }
 
 export default function PaginaInicial() {
-    const username = 'amandasabrina';
+    // const username = 'amandasabrina';
+    const [username, setUsername] = React.useState('amandasabrina');
+    const roteamento = useRouter();
+    const [disabled, setDisabled] = React.useState(false);
+    const [created, setCreated] = React.useState('');
+    // console.log(roteamento);
 
+    // "2019-10-22T14:29:26Z"
+    buscaApiGithub(username, setCreated);
+    
     return (
         <>
-        <GlobalStyle />
-        <Box
-            styleSheet={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            paddingTop: '65px',
-            backgroundColor: appConfig.theme.colors.primary['050'],
-            // backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
-            backgroundImage: 'url(https://wallpapercave.com/wp/wp8896750.jpg)',
-            backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
-            }}
-        >
             <Box
-            styleSheet={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexDirection: {
-                xs: 'column',
-                sm: 'row',
-                },
-                width: '100%', maxWidth: '700px',
-                borderRadius: '5px', padding: '32px', margin: '16px',
-                boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-                backgroundColor: appConfig.theme.colors.neutrals[700],
-            }}
+                styleSheet={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                paddingTop: '65px',
+                backgroundColor: appConfig.theme.colors.primary['050'],
+                // backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+                backgroundImage: 'url(https://wallpapercave.com/wp/wp8896750.jpg)',
+                backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
+                }}
+            >
+            <Box
+                styleSheet={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexDirection: {
+                    xs: 'column',
+                    sm: 'row',
+                    },
+                    width: '100%', maxWidth: '700px',
+                    borderRadius: '5px', padding: '32px', margin: '16px',
+                    boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
+                    backgroundColor: appConfig.theme.colors.neutrals[700],
+                }}
             >
             {/* Formulário */}
             <Box
                 as="form"
+                onSubmit={function(event) {
+                    event.preventDefault();
+                    roteamento.push('/chat');
+                    // window.location.href = '/chat';
+                }}
                 styleSheet={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
                 }}
             >
-                <Titulo tag="h2">Boas vindas de volta!</Titulo>
-                <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
+            <Titulo tag="h2">Boas vindas de volta!</Titulo>
+            <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                 {appConfig.name}
-                </Text>
+            </Text>
 
-                <TextField
+            {/* <input 
+                type="text"
+                value={username}
+                id="texte"
+                onChange={function handler(event) {
+                    console.log('user digitou: ', event.target.value);
+                    //onde ta o valor?
+                    const valor = event.target.value;
+                    // trocar o valor da variavel
+                    // através do React e avise quem precisa
+                    setUsername(valor);
+                }}
+            /> */}
+            <TextField
                 fullWidth
                 styleSheet={{
                     fontWeight: 'bold'
@@ -228,8 +233,19 @@ export default function PaginaInicial() {
                     backgroundColor: appConfig.theme.colors.neutrals[800],
                     },
                 }}
-                />
-                <Button
+                value={username}
+                onChange={function handler(event) {
+                    // console.log('user digitou: ', event.target.value);
+                    //onde ta o valor?
+                    const valor = event.target.value;
+                    // trocar o valor da variavel
+                    // através do React e avise quem precisa
+                    valor.length < 2 ? setDisabled(true) : setDisabled(false);
+                    setUsername(valor);
+                    buscaApiGithub(username, setCreated);
+                }}
+            />
+            <Button
                 type='submit'
                 label='Entrar'
                 fullWidth
@@ -240,7 +256,7 @@ export default function PaginaInicial() {
                     mainColorStrong: appConfig.theme.colors.primary["1200"],
                 }}
                 
-                />
+            />
             </Box>
             {/* Formulário */}
 
@@ -261,26 +277,28 @@ export default function PaginaInicial() {
                 minHeight: '240px',
                 }}
             >
-                <Image
+            <Image
                 styleSheet={{
                     borderRadius: '50%',
                     marginBottom: '16px',
                 }}
                 src={`https://github.com/${username}.png`}
-                />
-                <Text
+            />
+            <Text
                 variant="body4"
                 styleSheet={{
                     color: appConfig.theme.colors.neutrals[200],
                     backgroundColor: appConfig.theme.colors.neutrals[900],
                     padding: '3px 10px',
-                    borderRadius: '1000px'
+                    borderRadius: '1000px',
+                    textAlign: 'center'
                 }}
                 >
-                {username}
-                </Text>
+                <p>{username}<br/>{new Date(created).toLocaleDateString()}</p> 
+                
+            </Text>
             </Box>
-            {/* Photo Area */}
+                {/* Photo Area */}
             </Box>
         </Box>
         </>

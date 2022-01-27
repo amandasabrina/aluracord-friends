@@ -33,3 +33,9 @@ ctrl+shift+p Format Document
 -------------------------
 https://wallpapercave.com/friends-pc-wallpapers 
 fotos friends
+
+-------------------------
+na hr q chama o setUsername ele fala, alem de alterar o valor da variavel, aquela parte q usa essa variavel precisa ser atualizada, mas somente aquela parte. cria-se o chamado virtual dom, uma cópia e compara oq mudou. Otimização é mt boua
+
+-------------------------
+useState, useRouter -> são hooks, ganchos para alguma coisa
