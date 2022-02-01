@@ -23,7 +23,11 @@ function Titulo(props) {
 
 async function buscaApiGithub(username, setCreated) {
     await fetch(`https://api.github.com/users/${username}`).then(r => r.json()).then(r=>{
-        setCreated(r.created_at);
+        if(!r.message) { //se tiver param message é q n achou user, "not found" de retorno
+            setCreated(new Date(r.created_at).toLocaleDateString());
+        } else {
+            setCreated('');
+        }
     });
 }
 
@@ -157,10 +161,11 @@ export default function PaginaInicial() {
     const roteamento = useRouter();
     const [disabled, setDisabled] = React.useState(false);
     const [created, setCreated] = React.useState('');
+    let espera = null;
     // console.log(roteamento);
 
     // "2019-10-22T14:29:26Z"
-    buscaApiGithub(username, setCreated);
+    // buscaApiGithub(username, setCreated);
     
     return (
         <>
@@ -237,12 +242,15 @@ export default function PaginaInicial() {
                 onChange={function handler(event) {
                     // console.log('user digitou: ', event.target.value);
                     //onde ta o valor?
-                    const valor = event.target.value;
+                    const novoUsername = event.target.value;
                     // trocar o valor da variavel
                     // através do React e avise quem precisa
-                    valor.length < 2 ? setDisabled(true) : setDisabled(false);
-                    setUsername(valor);
-                    buscaApiGithub(username, setCreated);
+                    novoUsername.length < 2 ? setDisabled(true) : setDisabled(false);
+                    setUsername(novoUsername);
+                    clearTimeout(espera);
+                    espera = setTimeout(() => {
+                        buscaApiGithub(novoUsername, setCreated);
+                    }, 1000);
                 }}
             />
             <Button
@@ -294,7 +302,7 @@ export default function PaginaInicial() {
                     textAlign: 'center'
                 }}
                 >
-                <p>{username}<br/>{new Date(created).toLocaleDateString()}</p> 
+                <p>{username}<br/>{created}</p> 
                 
             </Text>
             </Box>
