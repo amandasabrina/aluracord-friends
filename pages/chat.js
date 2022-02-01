@@ -1,36 +1,94 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js';
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzcyMzkzMCwiZXhwIjoxOTU5Mjk5OTMwfQ.HqEuO75DtVWNLYQqTgQeGH6_9YOQH1qoEP7z-w8t1uk';
+const SUPABASE_URL      = 'https://xeymffvvmdykuesqktir.supabase.co';
+const supabaseClient    = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// fetch(`${SUPABASE_URL}/rest/v1/messages?select=*`, {
+//     headers: {
+//         'Content-Type': 'application/json',
+//         'apikey': SUPABASE_ANON_KEY,
+//         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+//     }
+// })
+//     .then((res) => {
+//         return res.json();
+//     })
+//     .then((response) => {
+//         console.log(response);
+//     });
+// mesma coisa que isso \/, só q simplificado
+// const dadosDoSupabase = supabaseClient
+// .from('mensagens')
+// .select('*')
+// .then((dados) => {
+//     console.log('Dados da consulta: ', dados);
+// });
+
+// React.useEffect(() => {
+//     supabaseClient
+//         .from('mensagens')
+//         .select('*')
+//         .then( ({data}) => {
+//             console.log('Dados da consulta: ', data);
+//         });
+// }, [listaDeMensagens]); 
+// console.log(dadosDoSupabase);
 
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
-    /**
-    // Usuário
-    - Usuário digita no campo textarea
-    - Aperta enter para enviar
-    - Tem que adicionar o texto na listagem
+    // // Usuário
+    // - Usuário digita no campo textarea
+    // - Aperta enter para enviar
+    // - Tem que adicionar o texto na listagem
+    // //Dev
+    // - [X] Campo criado
+    // - Vamos usar o onChange usa o useState (ter if para caso seja enter pra limpar a variável)
+    // - Lista de mensagens 
 
-    //Dev
-    - [X] Campo criado
-    - Vamos usar o onChange usa o useState (ter if para caso seja enter pra limpar a variável)
-    - Lista de mensagens 
-     */
-
-
-    // Sua lógica vai aqui
+    React.useEffect(() => {
+        supabaseClient
+            .from('mensagens')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(({ data }) => {
+                console.log('Dados da consulta: ', data);
+                setListaDeMensagens(data);
+            });
+    }, []); 
+    // ele fica observando essa variavel passada no array. assim q ela mudar, roda oq ta dentro do useEffect
 
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
-            id: listaDeMensagens.length + 1,
+            // id: listaDeMensagens.length + 1,
             de: 'amandasabrina',
             texto: novaMensagem
         }
-        setListaDeMensagens([
-            mensagem,
-            ...listaDeMensagens
-        ]);
+
+        supabaseClient
+            .from('mensagens')
+            .insert([
+                // tem que ser um objeto com os MESMOS CAMPOS q vc escreveu no supabase
+                mensagem
+            ])
+            .then(({ data }) => {
+                // console.log('Criando mensagem: ', data);
+                setListaDeMensagens([
+                    data[0],
+                    ...listaDeMensagens
+                ]);
+            });
+
+        // setListaDeMensagens([
+        //     mensagem,
+        //     ...listaDeMensagens
+        // ]);
+
         setMensagem('');
     }
 
@@ -183,7 +241,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/${mensagem.de}.png`}
                             />
                             <Text tag="strong">
                                 {mensagem.de}

@@ -22,7 +22,7 @@ function Titulo(props) {
 }
 
 async function buscaApiGithub(username, setCreated) {
-    await fetch(`https://api.github.com/users/${username}`).then(r => r.json()).then(r=>{
+    await fetch(`https://api.github.com/users/${username}`).then(respostaDB => respostaDB.json()).then(r=>{
         if(!r.message) { //se tiver param message é q n achou user, "not found" de retorno
             setCreated(new Date(r.created_at).toLocaleDateString());
         } else {
@@ -30,6 +30,11 @@ async function buscaApiGithub(username, setCreated) {
         }
     });
 }
+
+// ooou \/
+// fetch(`https://api.github.com/users/${username}`).then(async (respostaDoServidor) => {
+//     const respostaEsperada = await respostaDoServidor.json();
+// });
 
 // Componente React
 // function HomePage() {
