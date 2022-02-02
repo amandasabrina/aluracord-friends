@@ -1,11 +1,23 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { useRouter } from 'next/router';
 import { createClient } from '@supabase/supabase-js';
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzcyMzkzMCwiZXhwIjoxOTU5Mjk5OTMwfQ.HqEuO75DtVWNLYQqTgQeGH6_9YOQH1qoEP7z-w8t1uk';
 const SUPABASE_URL      = 'https://xeymffvvmdykuesqktir.supabase.co';
 const supabaseClient    = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function escutaMensagensEmTempoReal(adicionaMensagem) {
+    return supabaseClient
+        .from('mensagens')
+        .on('INSERT', (respostaLive) => {
+            // console.log('Houve uma nova mensagem');
+            adicionaMensagem(respostaLive.new);
+        })
+        .subscribe();
+}
 
 // fetch(`${SUPABASE_URL}/rest/v1/messages?select=*`, {
 //     headers: {
@@ -39,9 +51,6 @@ const supabaseClient    = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // console.log(dadosDoSupabase);
 
 export default function ChatPage() {
-    const [mensagem, setMensagem] = React.useState('');
-    const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
-
     // // Usuário
     // - Usuário digita no campo textarea
     // - Aperta enter para enviar
@@ -50,6 +59,20 @@ export default function ChatPage() {
     // - [X] Campo criado
     // - Vamos usar o onChange usa o useState (ter if para caso seja enter pra limpar a variável)
     // - Lista de mensagens 
+    // pra teste: (mas daí tirar o  setListaDeMensagens(data); do useEffect do supabaseClient )
+    // const [listaDeMensagens, setListaDeMensagens] = React.useState([
+    //     {
+    //         id: 1,
+    //         de: 'amandasabrina',
+    //         texto: ':sticker: http://2.bp.blogspot.com/-d21tffsTIQo/U_H9QjC69gI/AAAAAAAAKqM/wnvOyUr6a_I/s1600/Pikachu%2B2.gif'
+    //     }
+    // ]);
+
+    const [mensagem, setMensagem] = React.useState('');
+    const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+    const roteamento = useRouter();
+    const usuarioLogado = roteamento.query.username;
+    // console.log('userLogado: ', usuarioLogado, '\nrouter query: ', roteamento.query);
 
     React.useEffect(() => {
         supabaseClient
@@ -57,8 +80,24 @@ export default function ChatPage() {
             .select('*')
             .order('id', { ascending: false })
             .then(({ data }) => {
-                console.log('Dados da consulta: ', data);
+                // console.log('Dados da consulta: ', data);
                 setListaDeMensagens(data);
+            });
+
+            escutaMensagensEmTempoReal((novaMensagem) => {
+                console.log('Nova mensagem ', novaMensagem);
+                // setListaDeMensagens([
+                //     novaMensagem,
+                //     ...listaDeMensagens
+                // ]);
+                // teve q fazer essa mudança pq, pra vc garantir que vc vai ter a lista de mensagem atualizada, ao invés de passar o array, colocar no return pois o react tirou uma 'foto' inicial e o array tava vazio inicialmente
+                // Caso quiser reusar um valor de referencia (objeto/array), passar uma função pro setState
+                setListaDeMensagens((valorAtualDaLista) => {
+                    return [
+                        novaMensagem,
+                        ...valorAtualDaLista
+                    ]
+                })
             });
     }, []); 
     // ele fica observando essa variavel passada no array. assim q ela mudar, roda oq ta dentro do useEffect
@@ -66,7 +105,8 @@ export default function ChatPage() {
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
             // id: listaDeMensagens.length + 1,
-            de: 'amandasabrina',
+            // de: 'amandasabrina',
+            de: usuarioLogado,
             texto: novaMensagem
         }
 
@@ -77,11 +117,11 @@ export default function ChatPage() {
                 mensagem
             ])
             .then(({ data }) => {
-                // console.log('Criando mensagem: ', data);
-                setListaDeMensagens([
-                    data[0],
-                    ...listaDeMensagens
-                ]);
+                console.log('Criando mensagem: ', data);
+                // setListaDeMensagens([
+                //     data[0],
+                //     ...listaDeMensagens
+                // ]);
             });
 
         // setListaDeMensagens([
@@ -174,6 +214,14 @@ export default function ChatPage() {
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
+                        {/* CallBack - chamada de retorno - ou seja, quando alguma coisa q vc queria terminou, ele vai executar a função q vc passou */}
+                        <ButtonSendSticker 
+                            // \/ chama-se interceptação, significa prover pra quem ta usando o seu componente (ex, se vc instala algo, vc n precisa saber o código dele)
+                            onStickerClick={(sticker) => {
+                                // console.log('[USANDO O COMPONENTE] Salva esse sticker no banco', sticker);
+                                handleNovaMensagem(`:sticker: ${sticker}`);
+                            }}
+                        />
                     </Box>
                 </Box>
             </Box>
@@ -200,7 +248,7 @@ function Header() {
 }
 
 function MessageList(props) {
-    console.log('MessageList', props);
+    // console.log('MessageList', props);
     return (
         <Box
             tag="ul"
@@ -257,7 +305,25 @@ function MessageList(props) {
                                 {(new Date().toLocaleDateString())}
                             </Text>
                         </Box>
-                        {mensagem.texto}
+                        {/* {mensagem.texto} */}
+
+                        {/* Condicional: ou seja, retornará um booleano*/}
+                        {/* {mensagem.texto.startsWith(':sticker:').toString()} */}
+                        {/* {mensagem.texto.startsWith(':sticker:')
+                        ? (
+                            "É sticker"
+                        )
+                        : (
+                            mensagem.texto
+                        )} */}
+
+                        {mensagem.texto.startsWith(':sticker')
+                        ? (
+                            <Image src={mensagem.texto.replace(':sticker:', '')} />
+                        )
+                        : (
+                            mensagem.texto
+                        )}
                     </Text>
                 );
             })}
