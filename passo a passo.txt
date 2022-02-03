@@ -1,0 +1,117 @@
+nextjs.org/docs/getting-started
+yarn init -y (-y pra n ficar as perguntas especificas)
+yarn add next react react-dom
+o package.json gerencia os pacotes p noix
+yarn dev p rodar
+
+yarn add @skynexui/components (usado com isso de jsx)
+outras opções: tailwindcss, styled-components
+
+npx gitignore node (cria um arquivo pro git ter essa ferramenta de versao, pra controlar os arquivos, gerenciar essas versoes e td mais e ignorar)
+npx - atalho do npm pra rodar algo mais remoto assim sem ter q instalar na sua máquina
+
+-------------------------
+css in js:
+github.com/vercel/styled-jsx
+
+-------------------------
+Material Design
+mui.com/pt/
+
+-------------------------
+Storybook topzera
+https://storybook.skynexui.dev/?path=/story/components-box--box-component
+
+-------------------------
+Corezinhaxx
+https://coolors.co/d2375e-ffe0b5-8a6552-452521-bdb246
+
+-------------------------
+Comando p formatar o documento
+ctrl+shift+p Format Document
+
+-------------------------
+Fotos friends
+https://wallpapercave.com/friends-pc-wallpapers 
+
+-------------------------
+na hr q chama o setUsername ele fala, alem de alterar o valor da variavel, aquela parte q usa essa variavel precisa ser atualizada, mas somente aquela parte. cria-se o chamado virtual dom, uma cópia e compara oq mudou. Otimização é mt boua
+
+-------------------------
+useState, useRouter -> são hooks, ganchos para alguma coisa
+
+-------------------------
+Ferramenta de BA, backEnd as a service (tem firebase tb com esse serviço)
+supabase.com
+
+criar um projeto
+Database - table editor - criar nova tabela - colocar os campos (nesse caso o de e o texto) - insert row - coloca valor nos campos
+
+github.com/supabase/supabase-js
+yarn add @supabase/supabase-js
+
+-------------------------
+useEffect -> usado p vc lidar com todas as coisas q fogem do fluxo padrão do seu componente
+se ta no return geral, eh padrão, caso precise carregar a parte e tal, cai no useEffect
+
+-------------------------
+Aula 2 - desafio n feito
+quando textfield tiver 2 ou menos, esconder imagem do user
+
+-------------------------
+Aula 3 - desafio n feito
+criar botao pra excluir uma msg em especifico, e botao pra enviar a msg do lado da caixa de msg (tera msm função de qnd clica no enter)
+
+-------------------------
+Aula 4 Desafio
+criar um loading de quando nao tem nenhuma msg, esquema de escrito em opaco so pra nao ficar a sensação de q n tem nada 
+no mouseOver da imagem de profile do github (q ta pequena) mostrar essa imagem maior, o link p ir pro github dessa pessoa, e outras infos q vem da API do github tipo repositórios.. algum componente do react q faz esse efeito de passar o mouse e abrir?
+botao do lado do de enviar pra pull request, mandar img, mandar anexo (material UI tem essas ferramentas talvez)
+
+-------------------------
+Aula 1 - links
+Diminuir qtd ifs no código com Strategy
+https://www.youtube.com/watch?v=S-jqd6WZ7M0&ab_channel=BrazilJS
+
+Como pegar dados de API? Como fazer AJAX ou AJAX, pegando dados de serviços via JS
+https://www.youtube.com/watch?v=85vJXFpXLQw
+
+Como funciona a navegação SPA no NextJS? O componente Link | Pokédex
+https://www.youtube.com/watch?v=-kVnp3fg-v4
+
+O que todo projeto deveria ter? #01 | GitHub PRO + Projetos Organizados + Linter + EditorConfig
+https://www.youtube.com/watch?v=yMRSDdifGW8
+
+Como centralizar no CSS? 3 formas, Vertical/Horizontal + Bônus #DicasDeCSS
+https://www.youtube.com/watch?v=Cu-HP-gvggg
+
+https://cssgridgarden.com/
+https://flexboxfroggy.com/
+
+Como documentar códigos? Documentando Front End com Storybook!
+https://www.youtube.com/watch?v=R41_Qedrzik&t=7s
+
+-------------------------
+Aula 2 - links
+Formulários em React com Engenharia Reversa no Formik | DevSoutinho
+https://www.youtube.com/watch?v=cMq6k7ymv2s&ab_channel=DevSoutinho
+
+Jogo com JavaScript #01: Criando um Flappy Bird do ZERO!!!
+https://www.youtube.com/watch?v=jOAU81jdi-c&list=PLTcmLKdIkOWmeNferJ292VYKBXydGeDej&ab_channel=DevSoutinho
+https://www.youtube.com/playlist?list=PLTcmLKdIkOWmeNferJ292VYKBXydGeDej
+
+-------------------------
+Aula 3 - links
+O que é Latência? O que é CDN? Como deixar seu site mais rápido? WebVitals e dicas de performance!
+https://www.youtube.com/watch?v=x4eyf5L5caY&ab_channel=DevSoutinho
+
+Entendendo como fazer AJAX com a FetchAPI
+https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
+
+-------------------------
+Aula 5 - links
+Dicas de programação mario souto
+https://www.youtube.com/playlist?list=PLTcmLKdIkOWkJY8LJXs1GDqBnxCGsExBO
+
+Como fazer um site ou blog com NextJS, SEO e Styled Components
+https://www.youtube.com/playlist?list=PLTcmLKdIkOWkVld6KvLJbUCPIOjqLg9cr
